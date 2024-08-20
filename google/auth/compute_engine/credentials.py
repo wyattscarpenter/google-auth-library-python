@@ -20,6 +20,7 @@ Compute Engine using the Compute Engine metadata server.
 """
 
 import datetime
+import json
 
 from google.auth import _helpers
 from google.auth import credentials
@@ -156,6 +157,15 @@ class Credentials(
         )
         self._universe_domain_cached = True
         return self._universe_domain
+
+    @_helpers.copy_docstring(credentials.Credentials)
+    def get_cred_info(self):
+        cred_info_json = {
+            "credential_source": "metadata_server",
+            "credential_type": "VM credentials",
+            "principal": self.service_account_email,
+        }
+        return json.dumps(cred_info_json)
 
     @_helpers.copy_docstring(credentials.CredentialsWithQuotaProject)
     def with_quota_project(self, quota_project_id):

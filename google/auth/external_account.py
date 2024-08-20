@@ -186,6 +186,7 @@ class Credentials(
         self._supplier_context = SupplierContext(
             self._subject_token_type, self._audience
         )
+        self._cred_file_path = None
 
         if not self.is_workforce_pool and self._workforce_pool_user_project:
             # Workload identity pools do not support workforce pool user projects.
@@ -321,11 +322,24 @@ class Credentials(
 
         return self._token_info_url
 
+    @_helpers.copy_docstring(credentials.Credentials)
+    def get_cred_info(self):
+        if self._cred_file_path:
+            cred_info_json = {
+                "credential_source": self._cred_file_path,
+                "credential_type": "external account credentials",
+            }
+            if self.service_account_email:
+                cred_info_json["principal"] = self.service_account_email
+            return json.dumps(cred_info_json)
+        return None
+
     @_helpers.copy_docstring(credentials.Scoped)
     def with_scopes(self, scopes, default_scopes=None):
         kwargs = self._constructor_args()
         kwargs.update(scopes=scopes, default_scopes=default_scopes)
         scoped = self.__class__(**kwargs)
+        scoped._cred_file_path = self._cred_file_path
         scoped._metrics_options = self._metrics_options
         return scoped
 
@@ -448,6 +462,7 @@ class Credentials(
         kwargs = self._constructor_args()
         kwargs.update(quota_project_id=quota_project_id)
         new_cred = self.__class__(**kwargs)
+        new_cred._cred_file_path = self._cred_file_path
         new_cred._metrics_options = self._metrics_options
         return new_cred
 
@@ -456,6 +471,7 @@ class Credentials(
         kwargs = self._constructor_args()
         kwargs.update(token_url=token_uri)
         new_cred = self.__class__(**kwargs)
+        new_cred._cred_file_path = self._cred_file_path
         new_cred._metrics_options = self._metrics_options
         return new_cred
 
@@ -464,6 +480,7 @@ class Credentials(
         kwargs = self._constructor_args()
         kwargs.update(universe_domain=universe_domain)
         new_cred = self.__class__(**kwargs)
+        new_cred._cred_file_path = self._cred_file_path
         new_cred._metrics_options = self._metrics_options
         return new_cred
 
