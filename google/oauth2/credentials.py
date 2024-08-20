@@ -302,7 +302,7 @@ class Credentials(credentials.ReadOnlyScoped, credentials.CredentialsWithQuotaPr
         return cred
 
     @_helpers.copy_docstring(credentials.Credentials)
-    def _get_cred_info(self):
+    def get_cred_info(self):
         if self._cred_file_path:
             cred_info_json = {
                 "credential_source": self._cred_file_path,
