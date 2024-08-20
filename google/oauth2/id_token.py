@@ -64,7 +64,7 @@ from google.auth import exceptions
 from google.auth import jwt
 from google.auth import transport
 
-from typing import Union
+from typing import Any, Mapping, Union
 
 
 # The URL that provides public certificates for verifying ID tokens issued
